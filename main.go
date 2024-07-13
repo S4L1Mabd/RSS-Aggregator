@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -9,9 +10,17 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
+	"github.com/S4L1Mabd/RSS-Aggregator"
 )
 
 func main() {
+
+	// api part
+	type apiConfig struct {
+		DB *database.Queries ///will hold connection with database
+	}
+	//end
 
 	// Routers Configuration
 
@@ -47,6 +56,24 @@ func main() {
 
 		log.Fatal("The Serveur is Down , No port Match ")
 	}
+	// import database
+
+	dbURL := os.Getenv("DB_URL")
+
+	if dbURL == "" {
+
+		log.Fatal("The connection to database if filed ")
+	}
+
+	conx, err1 := sql.Open("postgres", dbURL)
+
+	if err1 != nil {
+
+		log.Fatal("The connection to database if filed ")
+
+	}
+
+	// end
 
 	srv := &http.Server{ //Connectimg our router to http Serveur
 
